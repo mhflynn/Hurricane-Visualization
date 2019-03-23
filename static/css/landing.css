@@ -1,0 +1,25 @@
+/*img {
+    background-image: url("h2.jpg");
+    background-position: center;
+    width: 1500px;
+    height: 700px;
+}*/
+p{
+    color:white;
+    font-size: 36px;
+}
+
+p.a {
+    text-decoration-color: black;
+    text-align: center;
+}
+
+div.box {
+    background: white;
+    height: 55px;
+    position: absolute;
+    width: 950px;
+    border: solid black;
+    top: 80%;
+    left: 23%;
+}
