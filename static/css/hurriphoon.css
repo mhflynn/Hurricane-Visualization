@@ -1,9 +1,6 @@
-#timeline #pathmap #eventplot{ 
-    padding: 10px 10px 10px 10px;
+body{
+    background-color: #D1D1D1;
 }
-
-
-
 
 .vis-item {
     border-color: orange;

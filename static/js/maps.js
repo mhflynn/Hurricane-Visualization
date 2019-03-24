@@ -27,6 +27,15 @@ let outdoorsmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.
    accessToken: API_KEY
 });
 
+let lightmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+   maxZoom: 16,
+   id: "mapbox.light",
+   accessToken: API_KEY
+});
+
+
+
 let mapStyle = {
     color: "white",
     fillColor: "pink",
@@ -37,6 +46,6 @@ let mapStyle = {
   let pathMap = L.map("pathmap", {
     center: [31.7128, -41.0059],
     zoom: 2,
-    layers: [satellitemap]
+    layers: [lightmap]
   });
 

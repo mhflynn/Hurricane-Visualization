@@ -1,6 +1,7 @@
-var container = document.getElementById('timeline');
+let container = document.getElementById('timeline');
 let plotdiv=document.getElementById("eventPlot");
 let mapdiv=document.getElementById("pathmap");
+
 let gevents; //global copy of event response
 let gclick; // global copy of click data 
 let gpdata; // global copy of patg data
@@ -44,7 +45,8 @@ function drawGraphs(eventID){  //replace with actual json query to use in line d
     /* start with map */
     d3.json("/b_events/"+eventID).then(function(pdata){ 
         gpdata=pdata; //global copy
-        satellitemap.addTo(pathMap);
+        lightmap.addTo(pathMap);
+      
         //pdata.features[0].properties.winds.forEach(c=>  colos.push(getColor(c)))
 
         var myStyle = {
@@ -56,7 +58,7 @@ function drawGraphs(eventID){  //replace with actual json query to use in line d
                 style: myStyle
         }).addTo(pathMap)
         // wind speeed plot
-
+        infodiv.style.display="block";
         //plotdiv.style.display="block";
         let dates=gpdata.features[0].properties.dates;
         let winds=gpdata.features[0].properties.winds;
