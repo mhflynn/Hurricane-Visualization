@@ -16,6 +16,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 from geojson import LineString, Feature, Point, GeometryCollection, FeatureCollection
+
 def makeGeo(engine,id):
     edf=  pd.read_sql('Select * from Hurricanes where id="'+id+'" Order by Date,Time',engine)
     ls=LineString(edf[['Longitude','Latitude']].values.tolist())
@@ -25,6 +26,10 @@ def makeGeo(engine,id):
     f=Feature(geometry=ls,properties={"id":id, "name":name , "dates":dates, "winds":winds})
     fc=FeatureCollection([f])
     return fc
+
+def getEventHeader(engine,id):
+    evdf= pd.read_sql('SELECT id, name, min(Date) AS sdate, max(Date) AS edate, min(time) AS stime, max(Time) AS etime,  max(Wind) AS ws FROM Hurricanes WHERE id="'+id+'"',engine)
+    return evdf
 
 
 def getStyle(windsp):
@@ -48,7 +53,6 @@ def getEvents(engine):
         thisevent={ "id": row['id'], "start":sdate, "end":edate, "content":row['Name'].strip(), 'className':st }
         hurrs.append(thisevent)
     return hurrs
-
 
 
 

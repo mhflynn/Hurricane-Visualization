@@ -1,10 +1,11 @@
 let container = document.getElementById('timeline');
 let plotdiv=document.getElementById("eventPlot");
 let mapdiv=document.getElementById("pathmap");
-
+let infodiv= document.getElementById("eventInfo");
 let gevents; //global copy of event response
 let gclick; // global copy of click data 
 let gpdata; // global copy of patg data
+let ghdata; //global copy of single evenytheader data
 let lastEvent=""; 
 //let eventName="";
 //let t=('1965-01-01', '1966-01-31') // default view area for timeline
@@ -24,10 +25,10 @@ d3.json("/b_events").then(function(events){
         gclick=clickObj;
         eventId=clickObj.item;
         console.log(clickObj);
-        if (eventId !== null  && lastEvent !=eventId){
-            lastEvent=eventId
+       // if (eventId !== null  && lastEvent !=eventId){
+        //    lastEvent=eventId
             drawGraphs(eventId);
-        }
+       // }
     });  
 });// end json to get timeline data 
 
@@ -40,15 +41,50 @@ function getColor(x){
             x > 38	? '#B6F0B6'	:	//tstorm
                     '#DCE3DD'; 		//storm
 }
+
+function clearMap() {
+    for(i in pathMap._layers) {
+        if(pathMap._layers[i]._path != undefined) {
+            try {
+                pathMap.removeLayer(pathMap._layers[i]);
+            }
+            catch(e) {
+                console.log("problem with " + e + pathMap._layers[i]);
+            }
+        }
+    }
+}
+
+
 // get event specific data from /
 function drawGraphs(eventID){  //replace with actual json query to use in line d3.json...
+    /* main info about this event*/
+    d3.json("/b_eventHeader/"+eventID).then(function(hdata){
+        ghdata=hdata;
+        eId=d3.select("#evenId");
+        eId.text( eventID);
+        eName=d3.select("#eventName");
+        eName.text(Object.values(ghdata)[1][0]);
+        eDates=d3.select("#eventDates");
+        //eventDates
+        sd = (new moment(hdata["sdate"][0].toString()).add(ghdata["stime"][0]/100,'hours'));
+        ed = (new moment(hdata["edate"][0].toString()).add(ghdata["etime"][0]/100,'hours'));
+       
+        eDates.text(` ${ sd.format('MMMM Do YYYY, h a')} - \n  ${ ed.format('MMMM Do YYYY, h a')}`);
+        eSpeed= d3.select("#eventSpeed");
+        eSpeed.text(`Maximum winds of ${ghdata["ws"][0]} mph`);
+      
+
+    });
     /* start with map */
+
+
+
     d3.json("/b_events/"+eventID).then(function(pdata){ 
+        clearMap();
         gpdata=pdata; //global copy
         lightmap.addTo(pathMap);
       
-        //pdata.features[0].properties.winds.forEach(c=>  colos.push(getColor(c)))
-
         var myStyle = {
             "color": getColor(d3.max(gpdata.features[0].properties.winds)),
             "weight": 2,
@@ -57,9 +93,8 @@ function drawGraphs(eventID){  //replace with actual json query to use in line d
        L.geoJson(pdata, {
                 style: myStyle
         }).addTo(pathMap)
-        // wind speeed plot
-        infodiv.style.display="block";
-        //plotdiv.style.display="block";
+        //pathMap.fitBounds(pathMap.getBounds());
+        /* wind speed */
         let dates=gpdata.features[0].properties.dates;
         let winds=gpdata.features[0].properties.winds;
         //console.log(winds);
@@ -84,12 +119,3 @@ function drawGraphs(eventID){  //replace with actual json query to use in line d
     });
 
 }
-/*
-function parseDates(){
-    tdorothy.forEach(d =>{
-        d.Date = (new moment(d.Date).add(d.Time/100,'hours')).toDate();
-        dates.push(d.Date);
-    });
-} */
-
-   

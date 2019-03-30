@@ -55,13 +55,19 @@ def land():
 
 
 # timeline.html related
-from getFromDb import getEvents, makeGeo
+from getFromDb import getEvents, makeGeo, getEventHeader
 
 @app.route("/b_events")  #background process - get all events
 def back_events():
     allEvents = getEvents(engine)
     #print(allEvents[0])
     return jsonify(list(allEvents)) 
+
+@app.route("/b_eventHeader/<id_x>")  #background process - get header for single event
+def eventXHeader(id_x):
+    this_event_header = getEventHeader(engine,id_x)
+   # print(this_event_header)
+    return this_event_header.to_json()
 
 @app.route("/b_events/<id_x>")  #background process - get info for single event
 def eventX(id_x):
